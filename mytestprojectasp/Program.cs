@@ -1,3 +1,5 @@
+using Microsoft.Extensions.FileProviders;
+
 namespace mytestprojectasp
 {
     public class Program
@@ -8,6 +10,9 @@ namespace mytestprojectasp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            IFileProvider fileProvider=new PhysicalFileProvider(Directory.GetCurrentDirectory());
+            builder.Services.AddSingleton<IFileProvider>(fileProvider);
 
             var app = builder.Build();
 
