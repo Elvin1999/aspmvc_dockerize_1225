@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 using mytestprojectasp.Models;
 using System.Diagnostics;
 
@@ -7,15 +8,18 @@ namespace mytestprojectasp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IFileProvider _fileProvider;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IFileProvider fileProvider)
         {
             _logger = logger;
+            _fileProvider = fileProvider;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var images=_fileProvider.GetDirectoryContents("wwwroot/images").Select(x=>x.Name);
+            return View(images);
         }
 
         public IActionResult ImageSave()
@@ -36,7 +40,7 @@ namespace mytestprojectasp.Controllers
                     await imageFile.CopyToAsync(stream);
                 }
             }
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         public IActionResult Privacy()
